@@ -1,5 +1,10 @@
 # shiritori-san
 ###A python bot for Discord to play the Shiritori game.
+
+The Shiritori bot was designed based on a game by Harumoro, his bot titled 'shiritori-kun' didn't fit my needs as I wanted a bot that was made in Python in comparison to his NodeJS. To sort this issue I made my own bot and added made it from square one retaining the features from his bot.
+
+[You can find his bot here.](https://github.com/Harumaro/shiritori-kun-discord-bot)
+
 ####Installation.
 
 Quick note, you need to have Python 3.5+ to use this bot. And a basic knowledge of how to use Git.
@@ -15,7 +20,7 @@ Quick note, you need to have Python 3.5+ to use this bot. And a basic knowledge 
 
 ####Usage.
 
-> !shiritori <word>
+> !shiritori word
 
 You can play the Shiritori word!
 
