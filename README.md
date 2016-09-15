@@ -32,6 +32,10 @@ Shows you the current letter in play.
 
 Shows you the words that have already been played and what not to repeat.
 
+> !resetround
+
+Votes to have the round reset!
+
 > !help
 
 Shows you the known commands.
