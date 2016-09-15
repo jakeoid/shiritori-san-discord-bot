@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from random import randint
 import random
+import re
 
 # ####################
 # Bot description and command prefix.
@@ -9,10 +10,15 @@ import random
 
 description = '''A bot that recreates the popular game of Shinitori on Discord.'''
 bot = commands.Bot(command_prefix='!', description=description)
+
+playedwords = [];
+
+usersvoted = [];
+roundresetvote = 0;
+
 token = "";
 botchannel = "";
 
-playedwords = [];
 
 # ####################
 # Debugging messages.
@@ -35,101 +41,45 @@ async def on_ready():
 
 def randHiragana():
 
-	letter = ""
+	hirachars = ['あ', 'い', 'う', 'え', 'お', 'か', 'き', 'く', 'け', 'こ', 'さ', 'し', 'す', 'せ', 'そ', 'た', 'ち', 'つ', 'て', 'と', 'な', 'に', 'ぬ', 'の',
+	'は', 'ひ', 'ふ', 'へ', 'ほ', 'ま', 'み', 'む', 'め', 'も', 'や', 'ゆ', 'よ', 'ら', 'り', 'る', 'れ', 'ろ', 'わ', 'を']
+	
 	num = randint(1,45)
-
-	if(num == 1):
-		letter = "あ"
-	if(num == 2):
-		letter = "い"
-	if(num == 3):
-		letter = "う"
-	if(num == 4):
-		letter = "え"
-	if(num == 5):
-		letter = "お"
-	if(num == 6):
-		letter = "か"
-	if(num == 7):
-		letter = "き"
-	if(num == 8):
-		letter = "く"
-	if(num == 9):
-		letter = "け"
-	if(num == 10):
-		letter = "こ"
-	if(num == 11):
-		letter = "さ"
-	if(num == 12):
-		letter = "し"
-	if(num == 13):
-		letter = "す"
-	if(num == 14):
-		letter = "せ"
-	if(num == 15):
-		letter = "た"
-	if(num == 16):
-		letter = "ち"
-	if(num == 17):
-		letter = "つ"
-	if(num == 18):
-		letter = "て"
-	if(num == 19):
-		letter = "と"
-	if(num == 20):
-		letter = "な"
-	if(num == 21):
-		letter = "に"
-	if(num == 22):
-		letter = "ぬ"
-	if(num == 23):
-		letter = "ね"
-	if(num == 24):
-		letter = "の"
-	if(num == 25):
-		letter = "は"
-	if(num == 26):
-		letter = "ひ"
-	if(num == 27):
-		letter = "ふ"
-	if(num == 28):
-		letter = "へ"
-	if(num == 29):
-		letter = "ほ"
-	if(num == 30):
-		letter = "ま"
-	if(num == 31):
-		letter = "み"
-	if(num == 32):
-		letter = "む"
-	if(num == 33):
-		letter = "め"
-	if(num == 34):
-		letter = "も"
-	if(num == 35):
-		letter = "や"
-	if(num == 36):
-		letter = "ゆ"
-	if(num == 37):
-		letter = "よ"
-	if(num == 38):
-		letter = "ら"
-	if(num == 39):
-		letter = "り"
-	if(num == 40):
-		letter = "る"
-	if(num == 41):
-		letter = "れ"
-	if(num == 42):
-		letter = "ろ"
-	if(num == 43):
-		letter = "わ"
-	if(num == 44):
-		letter = "を"
-	if(num == 45):
-		letter = "そ"
-
+	letter = hirachars[num]
+	
 	return letter;
+
+# ####################
+# Replaces all the Katakana characters 
+# with their Hiragana counterpart.
+# ####################
+
+def katakanaToHiragana(str):
+
+	# Replace Basic Kana
+
+	output = str.replace("ア", "あ").replace("イ", "い").replace("ウ", "う").replace("エ", "え").replace("オ", "お").replace("カ", "か").replace("キ", "き").replace("ク", "く").replace("ケ", "け").replace("コ", "こ").replace("サ", "さ").replace("シ", "し").replace("ス", "す").replace("セ", "せ").replace("ソ", "そ").replace("タ", "た").replace("チ", "ち").replace("ツ", "つ").replace("テ", "て").replace("ト", "と").replace("ナ", "な").replace("ニ", "に").replace("ヌ", "ぬ").replace("ネ", "ね").replace("ノ", "の").replace("ハ", "は").replace("ヒ", "ひ").replace("フ", "ふ").replace("ヘ", "へ").replace("ホ", "ほ").replace("マ", "ま").replace("ミ", "み").replace("ム", "む").replace("メ", "め").replace("モ", "も").replace("ヤ", "や").replace("ユ", "ゆ").replace("ヨ", "よ").replace("ラ", "ら").replace("リ", "り").replace("ロ", "る").replace("レ", "れ").replace("ル", "ろ").replace("ワ", "わ").replace("ヲ", "を").replace("ン", "ん")
+
+	# Replace Dakuten
+
+	output = output.replace("ガ", "が").replace("ギ", "ぎ").replace("グ", "ぐ").replace("ゲ", "げ").replace("ゴ", "ご").replace("ザ", "ざ").replace("ジ", "じ").replace("ズ", "ず").replace("ゼ", "ぜ").replace("ゾ", "ぞ").replace("ダ", "だ").replace("ヂ", "ぢ").replace("ズ", "づ").replace("デ", "で").replace("ド", "ど").replace("バ", "ば").replace("ビ", "び").replace("ブ", "ぶ").replace("ベ", "べ").replace("ボ", "ぼ").replace("パ", "ぱ").replace("ピ", "ぴ").replace("プ", "ぷ").replace("ペ", "ぺ").replace("ポ", "ぽ")
+
+	# Replace Small Kana
+
+	output = output.replace("ャ", "ゃ").replace("ュ", "ゅ").replace("ョ", "ょ").replace("ァ", "ぁ").replace("ィ", "ぃ").replace("ゥ", "ぅ").replace("ェ", "ぇ").replace("ォ", "ぉ")
+
+	return output;
+
+# ####################
+# Replaces all the small Kana
+# with their larger counterpart.
+# ####################
+
+def removeSmallKana(str):
+
+	output = str.replace("ゃ", "や").replace("ゅ", "ゆ").replace("ょ", "よ").replace("ぁ", "あ").replace("ぃ", "い").replace("ぅ", "う").replace("ぇ", "え").replace("ぉ", "お")
+
+	return output;
 
 # ####################
 # Defining a random character
@@ -141,7 +91,7 @@ lastplayer = ""
 
 # ####################
 # Removes the default !help command
-# because they suck.
+# because it sucks at explaining.
 # ####################
 
 bot.remove_command("help")
@@ -153,24 +103,41 @@ bot.remove_command("help")
 
 @bot.event
 async def on_message(m):
-	if m.channel.id == '225567870011047936':
+	global botchannel
+	if m.channel.id == botchannel:
 		await bot.process_commands(m)
 
 # ####################
-# Shows you how to play.
-# And the rules of the game.
+# Shows you the rules of the game.
 # ####################
 
 @bot.command()
 async def help():
-	message = "__**SHIRITORI RULES AND HELP**__\n\n";
+	message = "__**RULES AND HELP**__\n\n";
 	message += "Shiritori is a game about making words and expanding your vocabulary of any given language. The rules are simple and are as follows.";	
-	message += "\n\n1. Only nouns are permitted.";	
+	message += "\n\n1. Only nouns & adjectives are permitted.";	
 	message += "\n2. If you submit a word ending in 'ん' it will be replaced.";	
 	message += "\n3. Words may not be repeated.";	
-	message += "\n\nTo submit a word use `!shiritori <word>`!";	
+	message += "\n\nTo submit a word use `!shiritori <word>`";	
+	message += "\n\nTo view all commands use `!commands`";	
 
 	await bot.say(message)
+
+# ####################
+# Shows you the commands of the bot.
+# ####################
+
+@bot.command()
+async def commands():
+	message = "__**COMMANDS**__\n\n";
+	message += "`!shiritori <word>` - Submits your word to the Shiritori game!\n";	
+	message += "`!currentletter` - Shows the current letter being played!\n";	
+	message += "`!currentplayed` - Shows the current already played words!\n";	
+	message += "`!help` - Shows the rules of the game & how to play.\n";		
+	message += "`!commands` - Shows this menu (duh!).\n\n";	
+
+	await bot.say(message)
+
 
 # ####################
 # TODO
@@ -202,10 +169,34 @@ async def letter():
 	await bot.say("The current letter is " + currentletter + ".")
 
 # ####################
-# TODO 
-# Ends the current match resetting
-# the current words that are played.
+# Reset round.
 # ####################
+
+@bot.command(pass_context=True)
+async def resetround(ctx):
+	global roundresetvote
+
+	player = ctx.message.author.name
+
+	# Upon this it will make it 10.
+	if roundresetvote == 9:
+		# Reset the counter
+		roundresetvote = 0
+
+		# Reset the player words
+		playedwords[:] = []
+
+		# Reset the players voted
+		usersvoted[:] = []
+	elif roundresetvote <= 9 & usersvoted.count(player) >= 0:
+		# Adds one to the vote
+		roundresetvote += 1
+
+		# Adds the users name to the vote, so they cant do it again.
+		usersvoted.append(ctx.message.author.name)
+
+		# Tells the user amount of votes
+		await bot.say("You voted to have the round reset!")
 
 # ####################
 # Command to play words.
@@ -219,11 +210,23 @@ async def shiritori(ctx, word : str):
 	global currentletter
 	# Grabbing the player
 	global lastplayer
+
+	# Remove hiragana & small kana
+	fixedword = word
+	fixedword = katakanaToHiragana(fixedword)
+	fixedword = removeSmallKana(fixedword)
+
 	# New letter.
-	ourletter = word[:1]
+	ourletter = fixedword[:1]
 	# New last character
-	newletter = word[-1:]
-	
+	newletter = fixedword[-1:]
+
+	pattern = "[^あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん]+"
+	string = word
+	if re.findall(pattern, string):
+		await bot.say("Aaah! Your word contained invalid characters! You can only use Kana to submit.. sorry.")
+		return
+
 	# Getting some stuff about our player.
 	player = ctx.message.author
 	playername = ctx.message.author.name
@@ -231,15 +234,8 @@ async def shiritori(ctx, word : str):
 	# Check they weren't the last person to play.
 	if lastplayer == playername:
 		await bot.say("Sorry, but we can't let you play two words in a row!")
+		print("WARN : " + player + " tried to play a move twice. ")
 		return
-
-		# ####################
-		# TODO: Check that all the characters are Hiragana.
-		# ####################
-
-		# ####################
-		# TODO: Convert all the text to Hiragana.
-		# ####################
 
 	# Check that the letter is the same
 	if ourletter == currentletter:
@@ -247,7 +243,7 @@ async def shiritori(ctx, word : str):
 		# Update the playername for next time!
 		lastplayer = playername
 
-		# Tell everyone about the new letter!
+		# Tell everyone about the new letter! (oh and print a debug message)
 		await bot.say("A new word, `" + word + "` has been played by " + ctx.message.author.mention + ". The letter has now become `" + newletter + "`")
 		print("INFO : " + playername + ' played ' + word + ", letter is now " + newletter)
 
@@ -255,20 +251,17 @@ async def shiritori(ctx, word : str):
 		if newletter == "ん":
 			# It ended in 'ん' so we re-roll a new hiragana.
 			newletter = randHiragana();
-			# Tell everyone excitedly.
+			# Tell everyone excitedly and print a debug message.
 			await bot.say("Oh no! The word ended in `ん`! We've rolled the new letter `" + newletter + "`")
 			print("WARN : The word ended in a `ん`!, It was then rolled to " + newletter)
 
-		playedwords.append(word)
+			playedwords.append(word)
 
-		currentletter = newletter
+			currentletter = newletter
 
 	# Boo-hoo, it wasn't tell them.
 	else:
 		await bot.say("`" + ourletter + '` is not the current letter, it\'s `' + currentletter + "`")
-
-# ####################
-# TODO: Check that all arguments are met.
-# ####################
+		print("WARN : " + player + " tried to make an invalid move. ")
 
 bot.run(token)
