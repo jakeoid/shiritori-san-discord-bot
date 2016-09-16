@@ -221,7 +221,7 @@ async def shiritori(ctx, word : str):
 	# New last character
 	newletter = fixedword[-1:]
 
-	pattern = "[^あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん]+"
+	pattern = "[^あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃょゅぁぃぅぇぉー]+"
 	string = word
 	if re.findall(pattern, string):
 		await bot.say("Aaah! Your word contained invalid characters! You can only use Kana to submit.. sorry.")
@@ -234,7 +234,7 @@ async def shiritori(ctx, word : str):
 	# Check they weren't the last person to play.
 	if lastplayer == playername:
 		await bot.say("Sorry, but we can't let you play two words in a row!")
-		print("WARN : " + player + " tried to play a move twice. ")
+		print("WARN : " + playername + " tried to play a move twice. ")
 		return
 
 	# Check that the letter is the same
@@ -257,7 +257,7 @@ async def shiritori(ctx, word : str):
 
 			playedwords.append(word)
 
-			currentletter = newletter
+		currentletter = newletter
 
 	# Boo-hoo, it wasn't tell them.
 	else:
