@@ -1,5 +1,5 @@
 # shiritori-san
-###A python bot for Discord to play the Shiritori game.
+###A python bot for Discord, to play Shiritori!
 
 The Shiritori-san bot was designed on a classic Japanese bot, originally [Harumoro](https://github.com/Harumoro) made this bot titled 'shiritori-kun'. It just simply didn't fit my needs as I wanted a bot that was made in Python (in comparison to his NodeJS). To sort this issue I made my own bot and added made it from square one attempting to retain as many features as possible from his bot. Also I made use of a checks.py created by [Rapptz](https://github.com/Rapptz)
 
