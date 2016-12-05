@@ -11,16 +11,20 @@ The Shiritori-san bot was designed on a classic Japanese bot, originally [Haruma
 
 As a standard, when you go to run the bot you will need to have atleast Python 3 as any version prior isnt supported by `discord.py`, the library in which this Discord Bot was created in. I apologise for any inconvenience that this may cause. 
 
-1. Duplicate my sourcecode.
+Duplicate my sourcecode.
+
 ```git clone https://github.com/jakeoid/shiritori-san-discord-bot.git shiritori-san -b master```
 
-2. Install the requirements in the `requirements.txt`.
+Install the requirements in the `requirements.txt`.
+
 ```sudo -H pip3.5 install --upgrade -r requirements.txt```
 
-3. Edit the settings inside of the bot
+Edit the settings inside of the bot
+
 ```nano bot.py```
 
-4. Launch the bot.
+Launch the bot.
+
 ```python3.5 bot.py```
 
 ##Usage
