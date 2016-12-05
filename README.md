@@ -1,3 +1,4 @@
+<img src="icon.png" align="right" />
 # Shiritori-san
 A python bot for Discord, to play Shiritori!
 
