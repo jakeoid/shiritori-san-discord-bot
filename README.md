@@ -9,7 +9,7 @@ The Shiritori-san bot was designed on a classic Japanese bot, originally [Haruma
 
 ##Installation
 
-Quick note, you need to have Python 3.5+ to use this bot. And a basic knowledge of how to use Git.
+As a standard, when you go to run the bot you will need to have atleast Python 3 as any version prior isnt supported by `discord.py`, the library in which this Discord Bot was created in. I apologise for any inconvenience that this may cause. 
 
 1. Duplicate my sourcecode.
 ```git clone https://github.com/jakeoid/shiritori-san-discord-bot.git shiritori-san -b master```
@@ -27,7 +27,7 @@ Quick note, you need to have Python 3.5+ to use this bot. And a basic knowledge 
 
 > <word>
 
-Simply type any word in Kana and the bot will intepret it. IF you want to chat without triggering the bot simply put a ~ before you speak!
+Simply type any word in Kana and the bot will intepret it. However if you still want to chat without triggering input from the bot simply place a ~ (or any character for that matter), before you speak! This will let the bot know that you're just trying to talk and not play a word.
 
 > !currentletter, !letter, !kana, k
 
@@ -63,13 +63,9 @@ Rerolls the current letter.
 
 > !setletter <letter>
 
-Set's the letter to <letter>
+Set's the letter to `<letter>`
 
 > !exportwords
 
 Private Messages the staff member the letters (for a later feature).
-
-##Customization.
-
-This bot is currently lacking with the ability to customize itself, it will be added at a later date.
 
