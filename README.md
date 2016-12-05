@@ -1,20 +1,20 @@
 # Shiritori-san
 A python bot for Discord, to play Shiritori!
 
-The Shiritori-san bot was designed on a classic Japanese bot, originally [Harumoro](https://github.com/Harumoro) made this bot titled 'shiritori-kun'. It just simply didn't fit my needs as I wanted a bot that was made in Python (in comparison to his NodeJS). To sort this issue I made my own bot and added made it from square one attempting to retain as many features as possible from his bot. Also I made use of a checks.py created by [Rapptz](https://github.com/Rapptz)
+The Shiritori-san bot was designed on a classic Japanese bot, originally [Harumaro](https://github.com/Harumaro) made this bot titled 'shiritori-kun'. It just simply didn't fit my needs as I wanted a bot that was made in Python (in comparison to his NodeJS). To sort this issue I made my own bot and added made it from square one attempting to retain as many features as possible from his bot. Also I made use of a checks.py created by [Rapptz](https://github.com/Rapptz)
 
-[You can find his bot here.](https://github.com/Harumaro/shiritori-kun-discord-bot)
+[You can find Harumaro's original bot here.](https://github.com/Harumaro/shiritori-kun-discord-bot)
 
 [You can find Rapptz's `checks.py` here.](https://github.com/Rapptz/RoboDanny/blob/master/cogs/utils/checks.py)
 
-##Installation.
+##Installation
 
 Quick note, you need to have Python 3.5+ to use this bot. And a basic knowledge of how to use Git.
 
-1. Duplicate my code.
+1. Duplicate my sourcecode.
 ```git clone https://github.com/jakeoid/shiritori-san-discord-bot.git shiritori-san -b master```
 
-2. Install the requirements in the requirements.txt.
+2. Install the requirements in the `requirements.txt`.
 ```sudo -H pip3.5 install --upgrade -r requirements.txt```
 
 3. Edit the settings inside of the bot
@@ -23,7 +23,7 @@ Quick note, you need to have Python 3.5+ to use this bot. And a basic knowledge 
 4. Launch the bot.
 ```python3.5 bot.py```
 
-##Usage.
+##Usage
 
 > <word>
 
@@ -53,9 +53,9 @@ Shows you the rules of the game.
 
 Shows you the known commands.
 
-##Moderator Usage.
+##Moderator.
 
-For usage on my server I simply checked if the user had the ability to ban users, through this I allow them the permission to run the commands. If this doesn't suit you simply change the value.
+For usage on my server I simply checked if the user had the ability to ban users, through this I allow them the permission to run the commands. If this doesn't suit you simply change the value to something more fitting of what you need!
 
 > !reroll
 
