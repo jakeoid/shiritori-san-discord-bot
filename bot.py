@@ -13,20 +13,18 @@ import re
 description = '''A bot that recreates the popular game of Shinitori on Discord.'''
 bot = commands.Bot(command_prefix='!', description=description)
 
-token = "";
-botchannel = "";
+token = "MjI2MTA1NzgzMzU0MzkyNTg2.Cryw8A.d1AwFyA2RwTl_od_4OGR0h3Rn8s";
+global botchannel
+botchannel = "269767889001775104";
 
 # Variables
-playedwords = [];
-usersvoted = [];
-roundresetvote = 0;
+playedwords = []
 
 # Game Setup
-currentletter = randHiragana()
+currentletter = ""
 lastplayer = ""
 
 # Globals
-global botchannel
 
 # ####################
 # Debugging messages.
@@ -54,6 +52,8 @@ def randHiragana():
 	letter = hirachars[num]
 	
 	return letter;
+
+currentletter = randHiragana()
 
 # ####################
 # Hiraganises the Katakana
@@ -98,18 +98,29 @@ bot.remove_command("help")
 
 @bot.command(pass_context=True)
 async def help(ctx):
-	await bot.send_message(discord.Object(id=botchannel), ":mailbox: | I have sent you a Private Message!")
+	em = discord.Embed(colour=0xF44336)
+	em.add_field(name='Shiritori Rules!', value='Because you\'re gonna have a badtime otherwise!', inline='false')
+	em.add_field(name='1.', value='Nouns & adjectives are permitted.', inline='true')
+	em.add_field(name='2.', value='Words ending a \'ん\', will be rolled.', inline='true')
+	em.add_field(name='3.', value='You cannot replay words.', inline='true')
+	em.add_field(name='4.', value='Have fun (or else).', inline='true')
+	em.add_field(name='The idea is to take the previous words last letter & and use it in a new one!', value='To submit a word just type the word in kana and the bot should pick it up!', inline='false')
 
-	message = "```=== Shiritori Help ===```";
-	message += "```Shiritori is a game about making words and expanding your vocabulary of any given language. The rules are simple and are as follows.\n\n";	
-	message += "	1. Only nouns & adjectives are permitted. (rule of thumb is, anything ending in ます isn't allowed)\n";	
-	message += "	2. Unlike the average game of Shiritori if a word ends with the 'ん' constanant, a new letter will be chosen.\n";	
-	message += "	3. You are able to repeat words and/or use another word that a player has already played!```";	
-	message += "```	To submit a word just type the word in kana!\n";
-	message += "	If you want to speak in Japanese and not submit simply put 〜 at the start!\n";	
-	message += "	To view all commands use !commands```";	
+	await bot.send_message(ctx.message.channel, "", embed=em)
 
-	await bot.send_message(ctx.message.author, message)
+# ####################
+# Shows you the commands of the bot.
+# ####################
+
+@bot.command(pass_context=True)
+async def commands(ctx):
+	em = discord.Embed(colour=0xF44336)
+	em.add_field(name='Shiritori Commands!', value='HOW DO I CONTROL THIS AAAAAAA!!1!', inline='false')
+	em.add_field(name='!currentplayed', value='Shows played words!', inline='true')
+	em.add_field(name='!help', value='Shows the rules!', inline='true')
+	em.add_field(name='!commands', value='Shows this menu!', inline='true')
+
+	await bot.send_message(ctx.message.channel, "", embed=em)
 
 # ####################
 # MODERATOR+ : Set's the current letter if broken.
@@ -121,7 +132,10 @@ async def setletter(ctx, userinput : str):
 	global currentletter
 
 	currentletter = userinput
-	await bot.send_message(discord.Object(id=botchannel), ':blush: | I have set the letter to `' + userinput + "`")
+	
+	em = discord.Embed(colour=0xF44336)
+	em.add_field(name='A new letter has been set!', value='The new letter is now.. ' + userinput, inline='false')
+	await bot.send_message(ctx.message.channel, "", embed=em)
 
 # ####################
 # MODERATOR+ : Export's out all of the words.
@@ -137,7 +151,6 @@ async def exportwords(ctx):
 	for word in playedwords:
 		message += word + " "
 
-	await bot.send_message(discord.Object(id=botchannel), ":mailbox: | I have sent you a Private Message!")
 	await bot.send_message(ctx.message.author, message)
 
 # ####################
@@ -149,112 +162,49 @@ async def exportwords(ctx):
 async def reroll(ctx):
 	global currentletter
 	currentletter = randHiragana()
-	await bot.send_message(discord.Object(id=botchannel), ":rofl: | The letter has been rerolled, it now is " + currentletter + ".")
 
-# ####################
-# Shows you the commands of the bot.
-# ####################
-
-@bot.command(pass_context=True)
-async def commands(ctx):
-	await bot.send_message(discord.Object(id=botchannel), ":mailbox: | I have sent you a Private Message!")
-
-	message = "```=== Shiritori Command's List ===```";
-	message += "```!currentletter \n 	# Shows the current letter being played!\n"	
-	message += "!currentplayed \n 	# Shows the current already played words!\n"	
-	message += "!help \n 	# Shows the rules of the game & how to play.\n"
-	message += "!resetround \n 	# Votes to have the round reset!\n"		
-	message += "!resetvotes \n 	# Shows the votes to have round reset!\n"
-	message += "!commands \n 	# Shows this menu (duh!).```\n\n";	
-
-	await bot.send_message(ctx.message.author, message)
+	em = discord.Embed(colour=0xF44336)
+	em.add_field(name='Woah! The letter was rerolled!', value='The new letter is now.. ' + currentletter, inline='false')
+	await bot.send_message(ctx.message.channel, "", embed=em)
 
 # ####################
 # Command to show current word's played.
 # ####################
 
-@bot.command()
-async def currentplayed(aliases=["currentwords", "currentlyplayed", "currentplay"]):
+@bot.command(pass_context=True)
+async def currentplayed(ctx, aliases=["currentwords", "currentlyplayed", "currentplay"]):
 	
 	# Variables
 	say = ""
 
+	em = discord.Embed(colour=0xF44336)
+
 	# Check if we have any words to show
 	if(len(playedwords) > 0):
 		# Setup a quick conversation.
-		say = ":smile: | Currently, there is `" + str(len(playedwords)) + "` words played, they are.. "
+		em.add_field(name='Currently played words are..', value="There is `" + str(len(playedwords)) + "` words played.", inline='false')
 		
 		# Loop off every single word
 		for letter in playedwords:
 			say += letter + "\n"
+
+		# oh god
+		em.add_field(name='They are.. ', value='' + say)
 	# We don't have any, don't show any.
 	else:
-		say = ":astonished: | No one has played any words yet, use `!shiritori <word>` to play one!"
+		em.add_field(name='Currently played words are...', value="Uh.. oh, theres no words played! Current letter is " + currentletter, inline='false')
 
-	await bot.send_message(discord.Object(id=botchannel), say)
+	await bot.send_message(ctx.message.channel, "", embed=em)
 
 # ####################
 # Command to show the current letter.
 # ####################
 
-@bot.command(aliases=["currentletter", "kana", "k"])
-async def letter():
-	await bot.send_message(discord.Object(id=botchannel), ":upside_down: | The current letter is " + currentletter + ".")
-
-# ####################
-# Views the amount of votes to have the round reset.
-# ####################
-
-@bot.command(pass_context=True)
-async def resetvotes(ctx):
-	await bot.send_message(discord.Object(id=botchannel), ":upside_down: | There is `" + str(roundresetvote) + "/5` votes to reset the round.")	
-
-# ####################
-# Tells the user that the command is no longer in use.
-# ####################
-
-@bot.command(pass_context=True)
-async def shiritori(ctx):
-	await bot.send_message(discord.Object(id=botchannel), ":upside_down: | This command is retired, simply just type the word now!")	
-
-# ####################
-# Sets your vote to have the round reset.
-# ####################
-
-@bot.command(pass_context=True)
-async def resetround(ctx):
-	# Globals
-	global roundresetvote
-
-	# Variables
-	player = ctx.message.author.id
-
-	# Don't let the user vote if they already have voted previously.
-	if(str(player) in usersvoted):
-		await bot.send_message(discord.Object(id=botchannel), ":upside_down: | You've already voted to have the round reset..")
-		return
-
-	# Upon this it will make it 10.
-	if roundresetvote == 4:
-		# Reset the counter
-		roundresetvote = 0
-
-		# Reset the player words
-		playedwords[:] = []
-
-		# Reset the players voted
-		usersvoted[:] = []
-
-		await bot.send_message(discord.Object(id=botchannel), ":star: | Ta-da~ The round was reset!")
-	elif roundresetvote <= 9 & usersvoted.count(player) >= 0:
-		# Adds one to the vote
-		roundresetvote += 1
-
-		# Adds the users name to the vote, so they cant do it again.
-		usersvoted.append(str(ctx.message.author.id))
-
-		# Tells the user amount of votes
-		await bot.send_message(discord.Object(id=botchannel), ":upside_down: | You voted to have the round reset!")
+@bot.command(pass_context=True, aliases=["currentletter", "kana", "k"])
+async def letter(ctx):
+	em = discord.Embed(colour=0xF44336)
+	em.add_field(name='You\'re gonna struggle if you dont know the letter!', value="Luckily I know what it is! Current letter is `" + currentletter + "`", inline='false')
+	await bot.send_message(ctx.message.channel, "", embed=em)
 
 # ####################
 
@@ -263,6 +213,8 @@ async def on_message(message):
 
 	word = message.content
 	user = message.author
+
+	em = discord.Embed(colour=0xF44336)
 
 	global currentletter
 	global lastplayer
@@ -300,14 +252,16 @@ async def on_message(message):
 	if not re.findall(pattern, string):
 		# Check they weren't the last person to play.
 		if lastplayer == playerid:
-			await bot.send_message(discord.Object(id=botchannel), ":sweat_smile: | Sorry, but we can't let you play two words in a row!")
+			em.add_field(name='Woops, thats not good.', value="You can't play twice in a row, that'd be dumb.", inline='false')
 			print("WARN : " + playername + " tried to play a move twice. ")
+			await bot.send_message(message.channel, "", embed=em)
 			return
 
 		# Check that the word hasn't already been played.
 		if word in playedwords:
-			await bot.send_message(discord.Object(id=botchannel), ":sweat_smile: | Sorry, but that word has already been played!")
-			print("WARN : " + playername + " tried to play a move twice. ")
+			em.add_field(name='Woops, thats not good.', value="Sorry, that words already been played.", inline='false')
+			print("WARN : " + playername + " tried to play a word twice. ")
+			await bot.send_message(message.channel, "", embed=em)
 			return
 
 		# Check that the letter is the same
@@ -317,7 +271,7 @@ async def on_message(message):
 			lastplayer = playerid
 
 			# Tell everyone about the new letter! (oh and print a debug message)
-			await bot.send_message(discord.Object(id=botchannel), ":book: | A new word, `" + word + "` has been played by " + player.mention + ". The letter has now become `" + newletter + "`")
+			em.add_field(name="A new word, `" + word + "` has been played by " + playername, value="The letter has now become `" + newletter + "`", inline='false')
 			print("INFO : " + playername + ' played ' + word + ", letter is now " + newletter)
 
 			# Check that it doesn't end in 'ん'
@@ -325,7 +279,7 @@ async def on_message(message):
 				# It ended in 'ん' so we re-roll a new hiragana.
 				newletter = randHiragana();
 				# Tell everyone excitedly and print a debug message.
-				await bot.send_message(discord.Object(id=botchannel), ":sweat_smile: | Oh no! The word ended in `ん`! We've rolled the new letter `" + newletter + "`")
+				em.add_field(name="Woops, theres an issue!", value="Oh no! The word ended in `ん`! We've rolled the new letter `" + newletter + "`", inline='false')
 				print("WARN : The word ended in a `ん`!, It was then rolled to " + newletter)
 
 			# Check that it doesn't end in 'ー'
@@ -333,7 +287,7 @@ async def on_message(message):
 				# It ended in 'ん' so we re-roll a new hiragana.
 				newletter = randHiragana();
 				# Tell everyone excitedly and print a debug message.
-				await bot.send_message(discord.Object(id=botchannel), ":sweat_smile: | Oh no! The word ended in `ー`! We've rolled the new letter `" + newletter + "`")
+				em.add_field(name="Woops, theres an issue!", value="Oh no! The word ended in `ー`! We've rolled the new letter `" + newletter + "`", inline='false')
 				print("WARN : The word ended in a `ー`!, It was then rolled to " + newletter)
 
 			# Check that it doesn't end in 'っ'
@@ -341,8 +295,11 @@ async def on_message(message):
 				# It ended in 'ん' so we re-roll a new hiragana.
 				newletter = randHiragana();
 				# Tell everyone excitedly and print a debug message.
-				await bot.send_message(discord.Object(id=botchannel), ":sweat_smile: | Oh no! The word ended in `っ`! We've rolled the new letter `" + newletter + "`")
+				em.add_field(name="Woops, theres an issue!", value="Oh no! The word ended in `っ`! We've rolled the new letter `" + newletter + "`", inline='false')
 				print("WARN : The word ended in a `っ`!, It was then rolled to " + newletter)
+
+			# Send message
+			await bot.send_message(message.channel, "", embed=em)
 
 			# Add the words to already played, thus we can't play it again.
 			playedwords.append(word)
@@ -357,7 +314,9 @@ async def on_message(message):
 
 		else:
 			# Tell the user that the letter isn't correct.
-			await bot.send_message(discord.Object(id=botchannel), ":astonished: | `" + ourletter + '` is not the current letter, it\'s `' + currentletter + "`")
+			em.add_field(name="`" + ourletter + "` is not the current letter!", value="The current letter is `" + currentletter + "`!", inline='false')
+			await bot.send_message(message.channel, "", embed=em)
+			# Print a debug message.
 			print("WARN : " + playername + " tried to make an invalid move. ")
 
 
